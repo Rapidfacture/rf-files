@@ -9,12 +9,13 @@
   },
   "main": "index.js",
   "scripts": {
-    "prepublish": "npm run-script doc && npm test",
+    "prepublish": "npm test && ./node_modules/check-clean/check-clean.sh",
     "test": "grunt"
   },
   "dependencies": {
     "adm-zip": "0.4.11",
     "async": "2.6.0",
+    "check-clean": "0.1.0",
     "moment": "2.22.1",
     "mongoose": "5.12.3",
     "rf-log": "1.0.0",

@@ -2,7 +2,6 @@
   "name": "rf-files",
   "version": "0.0.1",
   "description": "Read/write files in specified structure",
-  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git@github.com:RAPIDFACTURE/rf-files.git"
@@ -10,24 +9,22 @@
   "main": "index.js",
   "scripts": {
     "prepublish": "npm test && ./node_modules/check-clean/check-clean.sh",
-    "test": "grunt"
+    "test": "./node_modules/.bin/eslint ./"
   },
   "dependencies": {
     "adm-zip": "0.4.11",
     "async": "2.6.0",
-    "check-clean": "0.1.0",
     "moment": "2.22.1",
     "mongoose": "5.12.3",
     "rf-log": "1.0.0",
     "single-byte": "1.0.7"
   },
   "devDependencies": {
-    "grunt": "1.0.1",
-    "grunt-eslint": "20.1.0",
-    "mdextract": "1.0.0"
+    "check-clean": "0.1.0",
+    "eslint": "6.0.1"
   },
   "author": {
-    "name": "Felix Furtmayr"
+    "name": "Bernhard Roemer"
   },
   "maintainers": [
     {

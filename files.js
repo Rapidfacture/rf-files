@@ -1,7 +1,7 @@
 let mainPrefix = '';
 const path = require('path');
 const fs = require('fs');
-const filesPath = path.join(__dirname, '../../../files');
+const filesPath = path.join(__dirname, '../../files');
 const moment = require('moment');
 
 module.exports = {

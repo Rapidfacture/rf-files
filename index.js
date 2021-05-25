@@ -5,11 +5,13 @@
 
 // deps
 const async = require('async');
+const path = require('path');
 
 // libs
 const filesLib = require('./files.js');
 const metaLib = require('./meta.js');
 
+let filesPath = path.join(__dirname, '../../files');
 
 // module functions
 module.exports = {
@@ -21,9 +23,13 @@ module.exports = {
 };
 
 
-function start (database, callback) {
+function start (database, path, callback) {
    callback = callback || function () {};
-   metaLib.start(database);
+
+   if (path) filesPath = path;
+
+   filesLib.start(path)
+   metaLib.start(database, path);
    callback();
 }
 
@@ -34,6 +40,7 @@ function read (fileId, callback) {
       if (!meta) return callback('filemeta missing');
 
       let path = metaLib.getLatestPath(meta);
+      console.log('open path', path);
       filesLib.read(path, callback);
    });
 }

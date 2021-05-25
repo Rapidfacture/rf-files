@@ -1,7 +1,8 @@
-const join = require('path').join;
+const path = require('path');
 const objectId = require('mongoose').Types.ObjectId;
 const filesLib = require('./files.js');
 let db;
+let filesPath = path.join(__dirname, '../../files');
 
 module.exports = {
    start,
@@ -16,8 +17,9 @@ module.exports = {
 };
 
 
-function start (database) {
+function start (database, path) {
    db = database;
+   if (path) filesPath = path;
 }
 
 
@@ -86,7 +88,7 @@ function addVersion (version, buffer, meta) {
    meta.mimetype = version.mimetype;
 
    let internalFileName = filesLib.createInternalFileName(meta, version);
-   version.path = join(filesLib.currentPath(meta.section), internalFileName);
+   version.path = path.join(filesLib.currentPath(meta.section), internalFileName);
    // further options that can be passed
    // extension
    // mimetype
@@ -125,6 +127,7 @@ function sectionFromApptype (apptype) {
 function getLatestPath (meta, callback) {
    let allPaths = getAllPaths(meta);
    let latest = allPaths[allPaths.length - 1];
+   latest = path.join(filesPath, latest);
    if (callback) callback(null, latest);
    return latest;
 }

@@ -1,10 +1,12 @@
 let mainPrefix = '';
 const path = require('path');
 const fs = require('fs');
-const filesPath = path.join(__dirname, '../../files');
+let filesPath = path.join(__dirname, '../../files');
 const moment = require('moment');
 
 module.exports = {
+   start,
+
    createInternalFileName,
    currentPath,
    currentFilesPath,
@@ -16,6 +18,9 @@ module.exports = {
    write: fs.writeFile // (path, buffer, callback)
 };
 
+function start (path) {
+   if (path) filesPath = path;
+}
 
 function createInternalFileName (meta, version) {
    let internalFileName = version._id;

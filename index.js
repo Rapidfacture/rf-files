@@ -40,7 +40,6 @@ function read (fileId, callback) {
       if (!meta) return callback('filemeta missing');
 
       let path = metaLib.getLatestPath(meta);
-      console.log('open path', path);
       filesLib.read(path, callback);
    });
 }

@@ -5,13 +5,13 @@
 
 // deps
 const async = require('async');
-const path = require('path');
+// const path = require('path');
 
 // libs
 const filesLib = require('./files.js');
 const metaLib = require('./meta.js');
 
-let filesPath = path.join(__dirname, '../../files');
+// let filesPath = path.join(__dirname, '../../files');
 
 // module functions
 module.exports = {
@@ -26,9 +26,9 @@ module.exports = {
 function start (database, path, callback) {
    callback = callback || function () {};
 
-   if (path) filesPath = path;
+   // if (path) filesPath = path;
 
-   filesLib.start(path)
+   filesLib.start(path);
    metaLib.start(database, path);
    callback();
 }

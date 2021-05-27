@@ -12,6 +12,7 @@ module.exports = {
    currentFilesPath,
    ensurePathExistsSync,
    getCurrentTime,
+   relativePath,
 
    read: fs.readFile, //   (path, callback)
    remove: fs.unlink, //   (path, callback)
@@ -44,6 +45,18 @@ function currentPath (section, granularity) {
 
 function currentFilesPath () {
    return path.join(filesPath, mainPrefix);
+}
+
+function relativePath (section, granularity) {
+   section = section || 'other';
+   granularity = granularity || 'month';
+   let subfolder = '';
+
+   // get week or month
+   subfolder = getCurrentTime(granularity);
+
+   //                    files/volume1/       2018/            invoices/  51
+   return path.join(getCurrentTime('year'), section, subfolder);
 }
 
 

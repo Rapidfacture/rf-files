@@ -88,7 +88,7 @@ function addVersion (version, buffer, meta) {
    meta.mimetype = version.mimetype;
 
    let internalFileName = filesLib.createInternalFileName(meta, version);
-   version.path = path.join(filesLib.currentPath(meta.section), internalFileName);
+   version.path = path.join(filesLib.relativePath(meta.section), internalFileName);
    // further options that can be passed
    // extension
    // mimetype

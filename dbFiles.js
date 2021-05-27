@@ -293,7 +293,7 @@ function _saveFile (data, mainCallback) {
          extension: data.fileMeta.extension,
          mimetype: data.fileMeta.mimetype, // Override the mime type with the given one in the header because stream.PassThrough alwas sets octet-stream
          size: fileMeta.size,
-         created: fileMeta.uploadDate,
+         created: fileMeta.created,
          apptype: data.fileMeta.apptype
       };
       files.push(file);

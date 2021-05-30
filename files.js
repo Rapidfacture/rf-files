@@ -24,8 +24,9 @@ function start (path) {
 }
 
 function createInternalFileName (meta, version) {
-   let internalFileName = version._id;
-   if (meta.filename) internalFileName += '_' + meta.filename;
+   let internalFileName = version._id + '';
+   if (meta.filename) internalFileName += '_' + meta.filename.replace(/[/\\?%*:|"<>]/g, '-');
+
    return internalFileName;
 }
 
@@ -47,16 +48,17 @@ function currentFilesPath () {
    return path.join(filesPath, mainPrefix);
 }
 
-function relativePath (section, granularity) {
+function relativePath (section, granularity, opts) {
+   opts = opts || {};
    section = section || 'other';
    granularity = granularity || 'month';
-   let subfolder = '';
 
    // get week or month
-   subfolder = getCurrentTime(granularity);
+   let subfolder = getCurrentTime(granularity, opts);
+   let year = getCurrentTime('year', opts);
 
    //                    files/volume1/       2018/            invoices/  51
-   return path.join(getCurrentTime('year'), section, subfolder);
+   return path.join(year, section, subfolder);
 }
 
 
@@ -66,14 +68,18 @@ function ensurePathExistsSync (filesP) {
 }
 
 
-function getCurrentTime (type) {
+function getCurrentTime (type, opts) {
    type = type || 'year';
+   opts = opts || {};
+
+   var date = opts.date || new Date();
+
    switch (type) {
       case 'year':
-         return moment().format('YYYY');
+         return moment(date).format('YYYY');
       case 'month':
-         return moment().format('MMMM');
+         return moment(date).format('MMMM');
       case 'week':
-         return moment().format('W');
+         return moment(date).format('W');
    }
 }

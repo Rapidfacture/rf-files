@@ -51,7 +51,7 @@ function write (meta, buffer, opts, callback) {
 
    meta = meta || {};
    if (!meta.apptype && !opts.dontCheckApptype) return callback('apptype missing');
-   meta = metaLib.createJson(meta, buffer);
+   meta = metaLib.createJson(meta, buffer, opts);
    let path = metaLib.getLatestPath(meta);
    filesLib.ensurePathExistsSync(path);
    filesLib.write(path, buffer, function () {

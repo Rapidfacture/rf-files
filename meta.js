@@ -61,7 +61,7 @@ function remove (meta, callback) {
 }
 
 
-function createJson (meta, buffer) {
+function createJson (meta, buffer, opts) {
    meta = meta || {};
    meta.section = meta.section || sectionFromApptype(meta.apptype);
    meta._id = meta.fileId || objectId();
@@ -69,12 +69,12 @@ function createJson (meta, buffer) {
    meta.filename = meta.filename || '';
    meta.internalFileName = meta._id;
    if (meta.filename) meta.internalFileName += '_' + meta.filename;
-   if (buffer) addVersion({}, buffer, meta);
+   if (buffer) addVersion({}, buffer, meta, opts);
    return meta;
 }
 
 
-function addVersion (version, buffer, meta) {
+function addVersion (version, buffer, meta, opts) {
    version = version || {};
    version._id = objectId();
    version.date = new Date();
@@ -87,8 +87,12 @@ function addVersion (version, buffer, meta) {
    meta.size = version.size;
    meta.mimetype = version.mimetype;
 
-   let internalFileName = filesLib.createInternalFileName(meta, version);
-   version.path = path.join(filesLib.relativePath(meta.section), internalFileName);
+   if (opts.objectIdToDate && meta._id) opts.date = objectId(meta._id).getTimestamp();
+
+   version.path = path.join(
+      filesLib.relativePath(meta.section, 'month', opts),
+      filesLib.createInternalFileName(meta, version)
+   );
    // further options that can be passed
    // extension
    // mimetype

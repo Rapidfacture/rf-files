@@ -119,10 +119,11 @@ function sectionFromApptype (apptype) {
       'bill': 'bills',
       'confirmation': 'confirmations',
       'drawing': 'articles',
-      'offer': 'offers',
       'invoice': 'invoices',
+      'offer': 'offers',
       'profile': 'profiles',
-      'purchase': 'purchases'
+      'purchase': 'purchases',
+      'reclamation': 'reclamation'
    }[apptype];
    return (section || 'other');
 }

@@ -1,6 +1,6 @@
 {
   "name": "rf-files",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "Read/write files in specified structure",
   "repository": {
     "type": "git",

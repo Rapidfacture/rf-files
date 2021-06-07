@@ -135,7 +135,7 @@ function categoryFromSubCategory (subcategory) {
       thirdReminder: 'invoice',
       cancellation: 'invoice',
       otherInvoice: 'invoice',
-      
+
       invoiceIncoming: 'incomingInvoice',
       firstReminderIncoming: 'incomingInvoice',
       secondReminderIncoming: 'incomingInvoice',

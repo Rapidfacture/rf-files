@@ -11,6 +11,7 @@ module.exports = {
    remove,
    createJson,
    addVersion,
+   categoryFromSubCategory,
 
    getLatestPath,
    getAllPaths
@@ -63,7 +64,7 @@ function remove (meta, callback) {
 
 function createJson (meta, buffer, opts) {
    meta = meta || {};
-   meta.section = meta.section || sectionFromApptype(meta.apptype);
+   meta.category = meta.category || categoryFromSubCategory(meta.subcategory);
    meta._id = meta.fileId || objectId();
    meta.created = new Date();
    meta.filename = meta.filename || '';
@@ -82,7 +83,7 @@ function addVersion (version, buffer, meta, opts) {
    version.mimetype = meta.mimetype || 'application/octet-stream';
 
    meta = meta || {};
-   meta.section = meta.section || sectionFromApptype(meta.apptype);
+   meta.category = meta.category || categoryFromSubCategory(meta.subCategory);
    meta.versions = meta.versions || [];
    meta.size = version.size;
    meta.mimetype = version.mimetype;
@@ -90,7 +91,7 @@ function addVersion (version, buffer, meta, opts) {
    if (opts.objectIdToDate && meta._id) opts.date = objectId(meta._id).getTimestamp();
 
    version.path = path.join(
-      filesLib.relativePath(meta.section, 'month', opts),
+      filesLib.relativePath(meta.category, 'month', opts),
       filesLib.createInternalFileName(meta, version)
    );
    // further options that can be passed
@@ -112,20 +113,68 @@ function addVersion (version, buffer, meta, opts) {
 //    return meta.versions[meta.versions.length - 1];
 // }
 
-function sectionFromApptype (apptype) {
-   let section = {
-      'account': 'accounts',
-      'article': 'articles',
-      'bill': 'bills',
-      'confirmation': 'confirmations',
-      'drawing': 'articles',
-      'invoice': 'invoices',
-      'offer': 'offers',
-      'profile': 'profiles',
-      'purchase': 'purchases',
-      'reclamation': 'reclamation'
-   }[apptype];
-   return (section || 'other');
+function categoryFromSubCategory (subcategory) {
+   let categories = {
+      requestCustomer: 'sale',
+      offer: 'sale',
+      confirmation: 'sale',
+      orderCustomer: 'sale',
+      otherSale: 'sale',
+
+      offerPurchase: 'purchase',
+      confirmationPurchase: 'purchase',
+      orderPurchase: 'purchase',
+      requestPurchase: 'purchase',
+      otherPurchase: 'purchase',
+
+      invoice: 'invoice',
+      partialInvoice: 'invoice',
+      proformaInvoice: 'invoice',
+      firstReminder: 'invoice',
+      secondReminder: 'invoice',
+      thirdReminder: 'invoice',
+      cancellation: 'invoice',
+      otherInvoice: 'invoice',
+      
+      invoiceIncoming: 'incomingInvoice',
+      firstReminderIncoming: 'incomingInvoice',
+      secondReminderIncoming: 'incomingInvoice',
+      thirdReminderIncoming: 'incomingInvoice',
+      cancellationIncoming: 'incomingInvoice',
+      otherIncoming: 'incomingInvoice',
+
+      image: 'article',
+      drawing: 'article',
+      drawing2d: 'article',
+      drawing3d: 'article',
+      assemblyDesign: 'article',
+      dataSheet: 'article',
+      billOfMaterials: 'article',
+      otherArticle: 'article',
+
+      workplan: 'production',
+      cncProgram: 'production',
+      clampingPlan: 'production',
+      setupPlan: 'production',
+      qualityProtocol: 'production',
+      serviceProtocol: 'production',
+      deliveryNote: 'production',
+      shippingLabel: 'production',
+      otherProduction: 'production',
+
+      profileImage: 'account',
+      logo: 'account',
+      presentation: 'account',
+      certificate: 'account',
+      commercialRegisterExtract: 'account',
+      otherAccount: 'account',
+
+      reclamation: 'reclamation',
+      otherReclamation: 'reclamation',
+
+      other: 'other'
+   }[subcategory];
+   return (categories || 'other');
 }
 
 

@@ -50,7 +50,7 @@ function write (meta, buffer, opts, callback) {
    if (!callback && typeof opts === 'function') callback = opts;
 
    meta = meta || {};
-   if (!meta.apptype && !opts.dontCheckApptype) return callback('apptype missing');
+   if (!meta.subcategory && !opts.dontCheckSubCategory) return callback('subcategory missing');
    meta = metaLib.createJson(meta, buffer, opts);
    let path = metaLib.getLatestPath(meta);
    filesLib.ensurePathExistsSync(path);

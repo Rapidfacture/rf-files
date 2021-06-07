@@ -24,7 +24,8 @@ function start (path) {
 }
 
 function createInternalFileName (meta, version) {
-   let internalFileName = version._id + '';
+   var internalFileName = meta.subcategory;
+   internalFileName += '_' + version._id;
    if (meta.filename) internalFileName += '_' + meta.filename.replace(/[/\\?%*:|"<>]/g, '-');
 
    return internalFileName;

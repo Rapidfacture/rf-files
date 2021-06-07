@@ -35,6 +35,7 @@ const log = require('rf-log').customPrefixLogger('[dbFiles]');
 const async = require('async');
 const AdmZip = require('adm-zip');
 const files = require('./index.js');
+const metaLib = require('./meta.js');
 
 // libs
 const encoding = require('./encoding.js');
@@ -170,7 +171,7 @@ function _duplicate (data, mainCallback) {
          delete meta.fileId;
          delete meta.created;
 
-         files.write(meta, buffer, {dontCheckApptype: true}, function (err, meta) {
+         files.write(meta, buffer, {dontCheckSubCategory: true}, function (err, meta) {
             if (err) {
                log.error(err);
                return callback(err);
@@ -183,7 +184,8 @@ function _duplicate (data, mainCallback) {
                mimetype: meta.mimetype, // Override the mime type with the given one in the header because stream.PassThrough alwas sets octet-stream
                size: meta.size,
                created: meta.created || new Date(),
-               apptype: meta.apptype || ''
+               category: meta.category || 'other',
+               subcategory: meta.subcategory || 'other'
             };
             duplicatedFiles.push(file);
 
@@ -251,7 +253,6 @@ function _getFileRaw (data, mainCallback) {
 
 
 function _saveFile (data, mainCallback) {
-
    // housekeeping
    if (!mainCallback) return log.error('saveFile: no callback!');
    if (!data) return mainCallback('saveFile: argument "data" is missing');
@@ -260,33 +261,35 @@ function _saveFile (data, mainCallback) {
       if (!data[keys[i]]) return mainCallback(`saveFile: argument data.${keys[i]} missing, aborting.`);
    }
 
+   data.fileMeta = data.fileMeta || {};
+   data.fileMeta.category = data.fileMeta.category || metaLib.categoryFromSubCategory(data.fileMeta.subcategory);
+
    async.waterfall([
-      findMeta,
+      findMetaDoc,
       saveBinary,
       createFile,
       updateDoc,
       saveDoc
    ], mainCallback);
 
-   function findMeta (callback) {
-      data.metaCollection
-         .findExactOne(data.metaQuery).exec(callback);
+   function findMetaDoc (callback) {
+      data.metaCollection.findOne(data.metaQuery).exec(callback);
    }
 
-   function saveBinary (doc, callback) {
-      doc = doc[0];
-
-      files.write(data.fileMeta, data.buffer, function (err, meta) {
+   function saveBinary (metaDoc, callback) {
+      files.write(data.fileMeta, data.buffer, function (err, fileMeta) {
          if (err) return callback(err);
 
-         callback(null, meta, doc);
+         callback(null, fileMeta, metaDoc);
       });
    }
 
-   function createFile (fileMeta, doc, callback) {
+   function createFile (fileMeta, metaDoc, callback) {
       var files = [];
-      doc.files = doc.files || [];
-      files = files.concat(doc.files);
+      metaDoc.files = metaDoc.files || [];
+      files = files.concat(metaDoc.files);
+
+
       var file = {
          fileId: fileMeta._id,
          filename: fileMeta.filename,
@@ -294,19 +297,20 @@ function _saveFile (data, mainCallback) {
          mimetype: data.fileMeta.mimetype, // Override the mime type with the given one in the header because stream.PassThrough alwas sets octet-stream
          size: fileMeta.size,
          created: fileMeta.created,
-         apptype: data.fileMeta.apptype
+         category: data.fileMeta.category,
+         subcategory: data.fileMeta.subcategory
       };
       files.push(file);
-      callback(null, doc, file, files);
+      callback(null, metaDoc, file, files);
    }
 
-   function updateDoc (doc, file, files, callback) {
+   function updateDoc (metaDoc, file, files, callback) {
       if (data.updateDocFunc) {
-         data.updateDocFunc(doc, file, files, function (err) {
-            callback(err, doc, file, files);
+         data.updateDocFunc(metaDoc, file, files, function (err) {
+            callback(err, metaDoc, file, files);
          });
       } else {
-         callback(null, doc, file, files);
+         callback(null, metaDoc, file, files);
       }
    }
 
@@ -345,24 +349,18 @@ function _removeFile (data, mainCallback) {
    }
 
    function saveMetaDoc (metaDoc, callback) {
+      if (!metaDoc) return callback('metaDoc seams not to exist');
+
       var files = [];
+      files = files.concat(metaDoc.files); // make a copy (no mongoose obj) => be able to work normal with array
 
-      if (metaDoc) {
-         files = files.concat(metaDoc.files); // make a copy (no mongoose obj) => be able to work normal with array
-
-         for (var i = 0; i < files.length; i++) {
-            // console.log(files[i].fileId, fileId);
-            if (files[i].fileId === data.fileId) {
-               // console.log('splice');
-               files.splice(i, 1);
-            }
+      for (var i = 0; i < files.length; i++) {
+         if (files[i].fileId === data.fileId) {
+            files.splice(i, 1);
          }
-
-         metaDoc.set({files: files});
-         metaDoc.save(callback);
-
-      } else {
-         callback('metaDoc seams not to exist');
       }
+
+      metaDoc.set({files: files});
+      metaDoc.save(callback);
    }
 }

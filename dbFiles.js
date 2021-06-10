@@ -286,6 +286,7 @@ function _saveFile (data, mainCallback) {
 
    function createFile (fileMeta, metaDoc, callback) {
       var files = [];
+      if (!metaDoc) return callback('metaDoc not defined');
       metaDoc.files = metaDoc.files || [];
       files = files.concat(metaDoc.files);
 

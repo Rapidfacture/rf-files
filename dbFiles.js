@@ -113,10 +113,7 @@ module.exports = {
 function _downloadAll (data, mainCallback) {
 
    // housekeeping
-   if (!data || !data.collection || !data.files) log.error('downloadAll: input parameters missing, aborting.');
-
-   // currently no options defined
-   // var options = data.options || {};
+   if (!data || !data.files) log.error('downloadAll: input parameters missing, aborting.');
 
    let zip = new AdmZip();
 

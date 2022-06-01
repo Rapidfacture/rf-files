@@ -81,7 +81,8 @@ function addVersion (version, buffer, meta, opts) {
    version.date = new Date();
    version.size = Buffer.byteLength(buffer);
    version.mimetype = meta.mimetype || 'application/octet-stream';
-
+   version.extension = meta.extension || meta.filename.split('.').pop(); 
+   
    meta = meta || {};
    meta.category = meta.category || categoryFromSubCategory(meta.subCategory);
    meta.versions = meta.versions || [];

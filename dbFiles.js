@@ -292,7 +292,7 @@ function _saveFile (data, mainCallback) {
          fileId: fileMeta._id,
          filename: fileMeta.filename,
          extension: data.fileMeta.extension,
-         mimetype: data.fileMeta.mimetype, // Override the mime type with the given one in the header because stream.PassThrough alwas sets octet-stream
+         mimetype: data.fileMeta.mimetype, // Override the mime type with the given one in the header because stream.PassThrough always sets octet-stream
          size: fileMeta.size,
          created: fileMeta.created,
          category: data.fileMeta.category,

@@ -66,11 +66,13 @@ function update (fileId, buffer, mainCallback) {
       async.apply(metaLib.find, fileId),
       function (meta, callback) {
          metaData = meta;
-         metaLib.addVersion(meta, buffer);
+         metaLib.addVersion({}, buffer, meta, {});
          callback(null, metaLib.getLatestPath(meta));
       },
-      async.apply(filesLib.write, buffer),
-      function (info, callback) {
+      function (path, callback) {
+         filesLib.write(path, buffer, callback);
+      },
+      function (callback) {
          metaLib.update(metaData, callback);
       }
    ], mainCallback);

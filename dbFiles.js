@@ -185,7 +185,7 @@ function _duplicate (data, mainCallback) {
                subcategory: meta.subcategory || 'other'
             };
 
-            if (meta.meta && meta.meta.public) file.meta = meta.meta;
+            if (meta.meta) file.meta = meta.meta;
             
             duplicatedFiles.push(file);
 
